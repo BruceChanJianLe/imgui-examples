@@ -70,3 +70,6 @@ target_link_libraries(imgui_handler PUBLIC imgui_glfw glfw)
 
 add_executable(imgui-example src/main.cpp)
 target_link_libraries(imgui-example PRIVATE imgui_glfw)
+
+add_executable(imgui-handler-example ./src/imgui_handler_example.cpp)
+target_link_libraries(imgui-handler-example  PRIVATE imgui_handler)
