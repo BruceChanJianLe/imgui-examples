@@ -16,6 +16,7 @@ namespace gui_util
 
   ImguiHandler::~ImguiHandler()
   {
+    Shutdown();
   }
 
   void ImguiHandler::Init()
@@ -95,6 +96,7 @@ namespace gui_util
     {
       // Rendering
       ImGui::Render();
+      glClear(GL_COLOR_BUFFER_BIT);
       ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
       glfwSwapBuffers(window_);
     }
