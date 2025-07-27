@@ -5,6 +5,24 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Define where to store imgui content
+set(THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/third_party/imgui)
+
+# Only download and zip file doesn't exist
+if(NOT EXISTS ${THIRD_PARTY_DIR}/v1.90.zip)
+  message(STATUS "Downloading imgui v1.90!")
+
+  set(IMGUI_ZIP_PATH ${THIRD_PARTY_DIR}/v1.90.zip)
+
+  file(DOWNLOAD
+    https://github.com/ocornut/imgui/archive/refs/tags/v1.90.zip
+    ${IMGUI_ZIP_PATH}
+    EXPECTED_HASH SHA256=fbe086f5bfc631db509acea851734f6996d6d2ef8fdeacb3f097f6def21e8af8
+    SHOW_PROGRESS
+  )
+
+endif()
+
 # -- Fetch IMGUI
 include(FetchContent)
 
@@ -25,7 +43,7 @@ endfunction()
 
 fetch_project(
   NAME imgui_src
-  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.90.zip
+  URL ${CMAKE_SOURCE_DIR}/third_party/imgui/v1.90.zip
   DESTINATION imgui
 )
 
