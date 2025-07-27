@@ -51,7 +51,10 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 find_package(OpenGL 3 REQUIRED)
 find_package(glfw3 REQUIRED)
 
-add_library(imgui_glfw SHARED
+add_library(imgui_glfw SHARED)
+
+target_sources(imgui_glfw
+  PRIVATE
   ${imgui_src_LOCATION}/imgui.cpp
   ${imgui_src_LOCATION}/imgui_draw.cpp
   ${imgui_src_LOCATION}/imgui_demo.cpp
@@ -63,31 +66,29 @@ add_library(imgui_glfw SHARED
 
   ${imgui_src_LOCATION}/misc/cpp/imgui_stdlib.cpp
 )
-
+target_include_directories(imgui_glfw PUBLIC
+  ${imgui_src_LOCATION}
+  ${imgui_src_LOCATION}/backends
+  ${imgui_src_LOCATION}/misc/cpp
+)
 target_link_libraries(imgui_glfw PUBLIC glfw OpenGL::GL)
 target_compile_definitions(imgui_glfw PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 
-target_include_directories(imgui_glfw
-PUBLIC
-  ${imgui_src_LOCATION}
-  ${imgui_src_LOCATION}/backends
-  ${imgui_src_LOCATION}/misc/cpp
-)
 # ---
 
-include_directories(
-  include
-  ${imgui_src_LOCATION}
-  ${imgui_src_LOCATION}/backends
-  ${imgui_src_LOCATION}/misc/cpp
-)
-add_library(imgui_handler SHARED
-  ./src/imgui_handler.cpp
-)
+# imgui_handler library
+add_library(imgui_handler SHARED)
+target_sources(imgui_handler PRIVATE ./src/imgui_handler.cpp)
+target_include_directories(imgui_handler PUBLIC include)
 target_link_libraries(imgui_handler PUBLIC imgui_glfw glfw)
 
-add_executable(imgui-example src/main.cpp)
-target_link_libraries(imgui-example PRIVATE imgui_glfw)
+# example using imgui_handler library
+add_executable(imgui-handler-example)
+target_sources(imgui-handler-example PRIVATE ./src/imgui_handler_example.cpp)
+target_link_libraries(imgui-handler-example PRIVATE imgui_handler)
 
-add_executable(imgui-handler-example ./src/imgui_handler_example.cpp)
-target_link_libraries(imgui-handler-example  PRIVATE imgui_handler)
+# example directly using imgui content
+add_executable(imgui-example)
+target_sources(imgui-example PRIVATE src/main.cpp)
+target_include_directories(imgui-example PRIVATE include)
+target_link_libraries(imgui-example PRIVATE imgui_glfw)
